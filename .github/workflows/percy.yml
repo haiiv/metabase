@@ -5,8 +5,10 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
     paths-ignore:
       - "docs/**"
+      - "**.md"
+      - "**unit.spec.js"
       - "frontend/test/**"
-      - "enterprise/frontend/test/**"
+      - "!frontend/test/metabase-visual/**"
   push:
     branches:
       - master
@@ -15,8 +17,10 @@ on:
       - "**"
     paths-ignore:
       - "docs/**"
+      - "**.md"
+      - "**unit.spec.js"
       - "frontend/test/**"
-      - "enterprise/frontend/test/**"
+      - "!frontend/test/metabase-visual/**"
 
 jobs:
   build:
