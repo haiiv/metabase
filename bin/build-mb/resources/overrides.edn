@@ -34,6 +34,7 @@
  "org.slf4j"              {"slf4j-api" {:resource "MIT.txt"}},
  "amalloy"                {"ring-gzip-middleware" {:resource "MIT.txt"}},
  "jakarta.activation"     {"jakarta.activation-api" {:resource "EDL.txt"}},
+ "com.sun.activation"     {"jakarta.activation" {:resource "EDL.txt"}}
  "net.jcip"               {"jcip-annotations" {:resource "CC_2_5.txt"}},
  "hiccup"                 {"hiccup" {:resource "EPL.txt"}},
  "jakarta.xml.bind"       {"jakarta.xml.bind-api" {:resource "EDL.txt"}},
@@ -41,7 +42,8 @@
  {"java-support" {:resource "apache2_0.txt"}},
  "io.dropwizard.metrics"  {"metrics-core" {:resource "apache2_0.txt"}},
  "stencil"                {"stencil" {:resource "EPL.txt"}},
- "org.antlr"              {"antlr-runtime" {:resource "BSD.txt"}},
+ "org.antlr"              {"antlr-runtime" {:resource "BSD.txt"}
+                           "antlr4-runtime" {:resource "BSD.txt"}},
  "de.rototor.pdfbox"      {"graphics2d" {:resource "apache2_0.txt"}},
  "colorize"               {"colorize" {:resource "EPL.txt"}},
  "org.liquibase"          {"liquibase-core" {:resource "apache2_0.txt"}},
