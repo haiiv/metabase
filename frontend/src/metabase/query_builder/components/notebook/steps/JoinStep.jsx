@@ -14,6 +14,7 @@ import {
   NotebookCellItem,
   NotebookCellAdd,
 } from "../NotebookCell";
+import { FieldsPickerIcon, FIELDS_PICKER_STYLES } from "../FieldsPickerIcon";
 import FieldsPicker from "./FieldsPicker";
 import {
   JoinClausesContainer,
@@ -168,7 +169,7 @@ function JoinClause({ color, join, updateQuery, showRemove }) {
 
   return (
     <JoinClauseRoot>
-      <NotebookCellItem color={color} icon="table2">
+      <NotebookCellItem color={color}>
         {(lhsTable && lhsTable.displayName()) || `Previous results`}
       </NotebookCellItem>
 
@@ -194,6 +195,7 @@ function JoinClause({ color, join, updateQuery, showRemove }) {
             options={join.parentDimensionOptions()}
             onChange={onParentDimensionChange}
             ref={parentDimensionPickerRef}
+            data-testid="parent-dimension"
           />
 
           <JoinOnConditionLabel />
@@ -205,16 +207,9 @@ function JoinClause({ color, join, updateQuery, showRemove }) {
             options={join.joinDimensionOptions()}
             onChange={onJoinDimensionChange}
             ref={joinDimensionPickerRef}
+            data-testid="join-dimension"
           />
         </JoinedTableControlRoot>
-      )}
-
-      {join.isValid() && (
-        <JoinFieldsPicker
-          className="mb1 ml-auto text-bold"
-          join={join}
-          updateQuery={updateQuery}
-        />
       )}
 
       {showRemove && <RemoveJoinIcon onClick={removeJoin} />}
@@ -256,7 +251,21 @@ function JoinTablePicker({
   }
 
   return (
-    <NotebookCellItem color={color} icon="table2" inactive={!joinedTable}>
+    <NotebookCellItem
+      color={color}
+      inactive={!joinedTable}
+      right={
+        joinedTable && (
+          <JoinFieldsPicker
+            join={join}
+            updateQuery={updateQuery}
+            triggerElement={<FieldsPickerIcon />}
+            triggerStyle={FIELDS_PICKER_STYLES.trigger}
+          />
+        )
+      }
+      rightContainerStyle={FIELDS_PICKER_STYLES.notebookItemContainer}
+    >
       <DatabaseSchemaAndTableDataSelector
         hasTableSearch
         canChangeDatabase={false}
@@ -380,6 +389,7 @@ const joinDimensionPickerPropTypes = {
   }).isRequired,
   query: PropTypes.object.isRequired,
   color: PropTypes.string,
+  "data-testid": PropTypes.string,
 };
 
 class JoinDimensionPicker extends React.Component {
@@ -388,14 +398,15 @@ class JoinDimensionPicker extends React.Component {
   }
   render() {
     const { dimension, onChange, options, query, color } = this.props;
+    const testID = this.props["data-testid"] || "join-dimension";
     return (
       <PopoverWithTrigger
         ref={ref => (this._popover = ref)}
         triggerElement={
           <NotebookCellItem
             color={color}
-            icon={dimension && dimension.icon()}
             inactive={!dimension}
+            data-testid={testID}
           >
             {dimension ? dimension.displayName() : `Pick a column...`}
           </NotebookCellItem>
@@ -412,6 +423,7 @@ class JoinDimensionPicker extends React.Component {
               onChange(field);
               onClose();
             }}
+            data-testid={`${testID}-picker`}
           />
         )}
       </PopoverWithTrigger>
@@ -424,10 +436,9 @@ JoinDimensionPicker.propTypes = joinDimensionPickerPropTypes;
 const joinFieldsPickerPropTypes = {
   join: PropTypes.object.isRequired,
   updateQuery: PropTypes.func.isRequired,
-  className: PropTypes.string,
 };
 
-const JoinFieldsPicker = ({ className, join, updateQuery }) => {
+const JoinFieldsPicker = ({ join, updateQuery, ...props }) => {
   const dimensions = join.joinedDimensions();
   const selectedDimensions = join.fieldsDimensions();
   const selected = new Set(selectedDimensions.map(d => d.key()));
@@ -465,7 +476,7 @@ const JoinFieldsPicker = ({ className, join, updateQuery }) => {
 
   return (
     <FieldsPicker
-      className={className}
+      {...props}
       dimensions={dimensions}
       selectedDimensions={selectedDimensions}
       isAll={join.fields === "all"}
